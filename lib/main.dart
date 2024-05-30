@@ -1,34 +1,61 @@
 import 'package:expenses/screen/accounts.dart';
+import 'package:expenses/service/database.dart';
 import 'package:expenses/service/dto/account.dart';
+import 'package:expenses/service/hivedto/accountdto.dart';
 import 'package:expenses/template/drawer.dart';
+import 'package:expenses/template/loading.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-void main() {
-  runApp(MyApp());
+void main() async {
+  await Hive.initFlutter();
+  var databaseService = DatabaseService();
+  await databaseService.registerAdapter();
+  runApp(MyApp(databaseService));
 }
 
-class MyApp extends StatelessWidget {
-  final List<Account> accounts = [
-    Account("Physical", Colors.red.shade900, []),
-    Account("Dana Darurat", Colors.blue.shade900, []),
-    Account("Traktir", Colors.green.shade900, []),
-    Account("Id Dima", Colors.yellow.shade900, []),
-  ];
-  MyApp({super.key});
+class MyApp extends StatefulWidget {
+  DatabaseService databaseService;
+  MyApp(this.databaseService, {super.key});
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late Future<List<AccountDto>> fAccounts;
+
+  @override
+  void initState() {
+    super.initState();
+    fAccounts = widget.databaseService.getAllAccounts();
+  }
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    // final drawer = NavigationDrawerTemplate(accounts);
-    DefaultTabController controllerTab = DefaultTabController(
-      length: accounts.length,
-      child: TabBarView(
-        children: accounts.indexed
-            .map<Widget>((entry) => AccountPage(entry.$1, accounts,
-                drawer: NavigationDrawerTemplate(accounts, entry.$1)))
-            .toList(),
-      ),
+    final mainWidget = FutureBuilder(
+      future: fAccounts,
+      builder:
+          (BuildContext context, AsyncSnapshot<List<AccountDto>> snapshot) {
+        if (!snapshot.hasData) {
+          return const LoadingScreen();
+        } else {
+          final accounts =
+              (snapshot.data!).map((element) => element.toAccount()).toList();
+          return DefaultTabController(
+            length: accounts.length,
+            child: TabBarView(
+              children: accounts.indexed
+                  .map<Widget>((entry) => AccountPage(entry.$1, accounts,
+                      drawer: NavigationDrawerTemplate(accounts, entry.$1)))
+                  .toList(),
+            ),
+          );
+        }
+      },
     );
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -53,7 +80,7 @@ class MyApp extends StatelessWidget {
             seedColor: Colors.blueGrey, brightness: Brightness.dark),
         useMaterial3: true,
       ),
-      home: controllerTab,
+      home: mainWidget,
     );
   }
 }
