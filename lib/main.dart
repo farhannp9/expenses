@@ -1,6 +1,5 @@
 import 'package:expenses/screen/accounts.dart';
 import 'package:expenses/service/database.dart';
-import 'package:expenses/service/dto/account.dart';
 import 'package:expenses/service/hivedto/accountdto.dart';
 import 'package:expenses/template/drawer.dart';
 import 'package:expenses/template/loading.dart';

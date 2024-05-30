@@ -1,5 +1,4 @@
 import 'package:expenses/service/dto/account.dart';
-import 'package:expenses/service/dto/transaction.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
