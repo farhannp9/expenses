@@ -1,9 +1,13 @@
+import 'dart:async';
+
 import 'package:expenses/service/dto/account.dart';
 import 'package:expenses/service/hivedto/accountdto.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class DatabaseService {
+  final StreamController<String> _update = StreamController();
+
   Future<void> registerAdapter() async {
     Hive.registerAdapter(AccountDtoAdapter());
 
@@ -30,7 +34,10 @@ class DatabaseService {
     // Map<String, AccountDto> all = Map.fromIterable(
     //     accounts.map((account) => MapEntry(account.name, account)).toList());
     Hive.openBox<AccountDto>('accounts').then((box) => box.putAll(all));
+    _update.sink.add("new update");
   }
+
+  Stream<String> get stream => _update.stream;
 
   Future<List<AccountDto>> getAllAccounts() async {
     final box = await Hive.openBox<AccountDto>('accounts');

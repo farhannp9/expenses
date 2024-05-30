@@ -23,11 +23,18 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late Future<List<AccountDto>> fAccounts;
+  late Stream<String> sUpdates;
 
   @override
   void initState() {
     super.initState();
     fAccounts = widget.databaseService.getAllAccounts();
+    sUpdates = widget.databaseService.stream
+      ..listen((onData) {
+        setState(() {
+          fAccounts = widget.databaseService.getAllAccounts();
+        });
+      });
   }
 
   // This widget is the root of your application.
@@ -47,7 +54,8 @@ class _MyAppState extends State<MyApp> {
             child: TabBarView(
               children: accounts.indexed
                   .map<Widget>((entry) => AccountPage(entry.$1, accounts,
-                      drawer: NavigationDrawerTemplate(accounts, entry.$1)))
+                      drawer: NavigationDrawerTemplate(
+                          accounts, entry.$1, widget.databaseService)))
                   .toList(),
             ),
           );

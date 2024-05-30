@@ -1,11 +1,14 @@
+import 'package:expenses/service/database.dart';
 import 'package:expenses/service/dto/account.dart';
+import 'package:expenses/service/hivedto/accountdto.dart';
 import 'package:expenses/template/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 
 class AccountEditScreen extends StatefulWidget {
   final Account? toEdit;
-  const AccountEditScreen({this.toEdit, super.key});
+  final DatabaseService databaseService;
+  const AccountEditScreen(this.databaseService, {this.toEdit, super.key});
 
   @override
   State<AccountEditScreen> createState() => _AccountEditScreenState();
@@ -138,12 +141,16 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
   }
 
   Future<void> _submitForm() async {
-    Account(
+    final toBeSubmitted = Account(
       _labelController.text,
       _color,
       widget.toEdit?.transactions ?? [],
       _currencyController.text,
     );
+    if (widget.toEdit == null) {
+      widget.databaseService
+          .addAccount([AccountDto.fromAccount(toBeSubmitted)]);
+    }
     debugPrint('submit');
     //  todo implement persistence
   }

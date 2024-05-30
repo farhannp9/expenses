@@ -1,4 +1,5 @@
 import 'package:expenses/screen/account.dart';
+import 'package:expenses/service/database.dart';
 import 'package:expenses/service/dto/account.dart';
 import 'package:expenses/template/navigation.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +7,10 @@ import 'package:flutter/material.dart';
 class NavigationDrawerTemplate extends StatelessWidget {
   final List<Account> accounts;
   final int currentIndex;
-  const NavigationDrawerTemplate(this.accounts, this.currentIndex, {super.key});
+  final DatabaseService databaseService;
+  const NavigationDrawerTemplate(
+      this.accounts, this.currentIndex, this.databaseService,
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +19,8 @@ class NavigationDrawerTemplate extends StatelessWidget {
       child: Container(
         // color: Colors.red.shade700,
         child: Column(children: [
-          ManageAccountMenu(accounts[DefaultTabController.of(context).index]),
+          ManageAccountMenu(accounts[DefaultTabController.of(context).index],
+              databaseService),
           SizedBox(
             height: 2,
             child: Container(
@@ -33,7 +38,9 @@ class NavigationDrawerTemplate extends StatelessWidget {
 
 class ManageAccountMenu extends StatelessWidget {
   final Account currentAccount;
-  const ManageAccountMenu(this.currentAccount, {super.key});
+  final DatabaseService databaseService;
+  const ManageAccountMenu(this.currentAccount, this.databaseService,
+      {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +57,7 @@ class ManageAccountMenu extends StatelessWidget {
           ),
           onPressed: () => Navigator.of(context).push(MaterialPageRoute(
             builder: (context) {
-              return const AccountEditScreen();
+              return AccountEditScreen(databaseService);
             },
           )),
         ),
@@ -64,7 +71,7 @@ class ManageAccountMenu extends StatelessWidget {
           ),
           onPressed: () => Navigator.of(context).push(MaterialPageRoute(
             builder: (context) {
-              return AccountEditScreen(toEdit: currentAccount);
+              return AccountEditScreen(databaseService, toEdit: currentAccount);
             },
           )),
         ),
