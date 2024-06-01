@@ -1,16 +1,19 @@
 import 'package:expenses/screen/transaction.dart';
+import 'package:expenses/service/database.dart';
 import 'package:expenses/service/dto/account.dart';
 import 'package:expenses/service/dto/transaction.dart';
 import 'package:expenses/template/appbar.dart';
+import 'package:expenses/template/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class AccountPage extends StatefulWidget {
   final int currentAccountIndex;
-  final Widget drawer;
   final List<Account> accounts;
-  const AccountPage(this.currentAccountIndex, this.accounts,
-      {required this.drawer, super.key});
+  final DatabaseService databaseService;
+  const AccountPage(
+      this.currentAccountIndex, this.accounts, this.databaseService,
+      {super.key});
 
   @override
   State<AccountPage> createState() => _AccountPageState();
@@ -29,7 +32,8 @@ class _AccountPageState extends State<AccountPage> {
   Widget build(BuildContext context) {
     return AppBarTemplate(
       appBarColor: account.color,
-      drawer: widget.drawer,
+      drawer: NavigationDrawerTemplate(
+          widget.accounts, widget.currentAccountIndex, widget.databaseService),
       appBarTitle: Text(account.name),
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),

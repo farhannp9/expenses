@@ -3,7 +3,6 @@ import 'package:expenses/service/database.dart';
 import 'package:expenses/service/dto/totalaccount.dart';
 import 'package:expenses/service/dto/transaction.dart';
 import 'package:expenses/service/hivedto/accountdto.dart';
-import 'package:expenses/template/drawer.dart';
 import 'package:expenses/template/loading.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -63,9 +62,8 @@ class _MyAppState extends State<MyApp> {
             length: accounts.length,
             child: TabBarView(
               children: accounts.indexed
-                  .map<Widget>((entry) => AccountPage(entry.$1, accounts,
-                      drawer: NavigationDrawerTemplate(
-                          accounts, entry.$1, widget.databaseService)))
+                  .map<Widget>((entry) =>
+                      AccountPage(entry.$1, accounts, widget.databaseService))
                   .toList(),
             ),
           );

@@ -72,6 +72,7 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
                 SizedBox(
                   width: 200,
                   child: TextFormField(
+                    enabled: widget.toEdit == null ? true : false,
                     controller: _labelController,
                     keyboardType: TextInputType.name,
                     decoration: const InputDecoration(
@@ -133,8 +134,10 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
     if (widget.toEdit == null) {
       widget.databaseService
           .addAccount([AccountDto.fromAccount(toBeSubmitted)]);
+    } else {
+      widget.databaseService.updateAccount(
+          toBeSubmitted.name, AccountDto.fromAccount(toBeSubmitted));
     }
-    debugPrint('submit');
     //  todo implement persistence
   }
 }
