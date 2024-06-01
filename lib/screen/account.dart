@@ -16,7 +16,6 @@ class AccountEditScreen extends StatefulWidget {
 
 class _AccountEditScreenState extends State<AccountEditScreen> {
   final _labelController = TextEditingController();
-  final _currencyController = TextEditingController();
   var _color = Colors.red.shade900;
   static List<Color> setOfColors = [
     Colors.red.shade900,
@@ -46,7 +45,6 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
     super.initState();
     if (widget.toEdit != null) {
       _labelController.text = widget.toEdit!.name;
-      _currencyController.text = widget.toEdit!.currency;
       _color = widget.toEdit!.color;
     }
   }
@@ -75,20 +73,6 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
                   width: 200,
                   child: TextFormField(
                     controller: _labelController,
-                    keyboardType: TextInputType.name,
-                    decoration: const InputDecoration(
-                      border: UnderlineInputBorder(),
-                      filled: true,
-                    ),
-                  ),
-                )
-              ]),
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                const Text("Currency"),
-                SizedBox(
-                  width: 200,
-                  child: TextFormField(
-                    controller: _currencyController,
                     keyboardType: TextInputType.name,
                     decoration: const InputDecoration(
                       border: UnderlineInputBorder(),
@@ -145,7 +129,6 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
       _labelController.text,
       _color,
       widget.toEdit?.transactions ?? [],
-      _currencyController.text,
     );
     if (widget.toEdit == null) {
       widget.databaseService

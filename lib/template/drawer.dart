@@ -1,6 +1,7 @@
 import 'package:expenses/screen/account.dart';
 import 'package:expenses/service/database.dart';
 import 'package:expenses/service/dto/account.dart';
+import 'package:expenses/service/dto/totalaccount.dart';
 import 'package:expenses/template/navigation.dart';
 import 'package:flutter/material.dart';
 
@@ -44,23 +45,25 @@ class ManageAccountMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ExpansionTile(
-      title: const Text("Manage account"),
-      children: [
-        TextButton(
-          child: const Row(
-            children: [
-              Icon(Icons.add),
-              SizedBox(width: 10),
-              Text("Add Account"),
-            ],
-          ),
-          onPressed: () => Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) {
-              return AccountEditScreen(databaseService);
-            },
-          )),
+    var children = [
+      TextButton(
+        child: const Row(
+          children: [
+            Icon(Icons.add),
+            SizedBox(width: 10),
+            Text("Add Account"),
+          ],
         ),
+        onPressed: () => Navigator.of(context).push(MaterialPageRoute(
+          builder: (context) {
+            return AccountEditScreen(databaseService);
+          },
+        )),
+      ),
+    ];
+
+    if (currentAccount is! TotalAccount) {
+      children.addAll([
         TextButton(
           child: const Row(
             children: [
@@ -75,7 +78,23 @@ class ManageAccountMenu extends StatelessWidget {
             },
           )),
         ),
-      ],
+        TextButton(
+          child: const Row(
+            children: [
+              Icon(Icons.delete),
+              SizedBox(width: 10),
+              Text("Delete Account"),
+            ],
+          ),
+          onPressed: () => databaseService
+              .deleteAccount(currentAccount.name)
+              .then((_) => DefaultTabController.of(context).animateTo(0)),
+        ),
+      ]);
+    }
+    return ExpansionTile(
+      title: const Text("Manage account"),
+      children: children,
     );
   }
 }

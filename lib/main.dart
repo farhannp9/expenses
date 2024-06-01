@@ -1,5 +1,7 @@
 import 'package:expenses/screen/accounts.dart';
 import 'package:expenses/service/database.dart';
+import 'package:expenses/service/dto/totalaccount.dart';
+import 'package:expenses/service/dto/transaction.dart';
 import 'package:expenses/service/hivedto/accountdto.dart';
 import 'package:expenses/template/drawer.dart';
 import 'package:expenses/template/loading.dart';
@@ -47,8 +49,16 @@ class _MyAppState extends State<MyApp> {
         if (!snapshot.hasData) {
           return const LoadingScreen();
         } else {
-          final accounts =
-              (snapshot.data!).map((element) => element.toAccount()).toList();
+          final accounts = (snapshot.data!)
+              .map((element) => element.toAccount())
+              .toList(growable: true);
+          final allTransactions = accounts
+              .expand((account) => account.transactions
+                  .map((trx) => MapEntry(account.name, trx)))
+              .map((entry) => Transaction.addCategory(entry.value, entry.key))
+              .toList();
+          accounts.insertAll(0,
+              [TotalAccount("Total", Colors.grey.shade700, allTransactions)]);
           return DefaultTabController(
             length: accounts.length,
             child: TabBarView(

@@ -34,7 +34,7 @@ class DatabaseService {
     // Map<String, AccountDto> all = Map.fromIterable(
     //     accounts.map((account) => MapEntry(account.name, account)).toList());
     Hive.openBox<AccountDto>('accounts').then((box) => box.putAll(all));
-    _update.sink.add("new update");
+    _update.sink.add("new");
   }
 
   Stream<String> get stream => _update.stream;
@@ -42,5 +42,11 @@ class DatabaseService {
   Future<List<AccountDto>> getAllAccounts() async {
     final box = await Hive.openBox<AccountDto>('accounts');
     return box.values.toList();
+  }
+
+  Future<void> deleteAccount(String name) async {
+    final box = await Hive.openBox<AccountDto>('accounts');
+    box.delete(name);
+    _update.sink.add("delete");
   }
 }

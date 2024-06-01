@@ -10,19 +10,16 @@ part 'accountdto.g.dart';
 class AccountDto {
   @HiveField(0)
   final String name;
-  @HiveField(1)
-  final String currency;
   @HiveField(2)
   final String color;
 
-  AccountDto(this.name, this.currency, this.color);
+  AccountDto(this.name, this.color);
 
   static AccountDto fromAccount(Account account) {
-    return AccountDto(
-        account.name, account.currency, account.color.toHexString());
+    return AccountDto(account.name, account.color.toHexString());
   }
 
   Account toAccount() {
-    return Account(name, Color(int.parse(color, radix: 16)), [], currency);
+    return Account(name, Color(int.parse(color, radix: 16)), []);
   }
 }

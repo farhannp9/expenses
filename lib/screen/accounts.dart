@@ -51,7 +51,7 @@ class _AccountPageState extends State<AccountPage> {
                   const Center(child: Text("Total")),
                   Center(
                       child: Text(
-                    "${account.currency}00.00",
+                    "00.00",
                     style: TextStyle(
                       color: Colors.blue.shade300,
                       fontWeight: FontWeight.bold,
@@ -96,7 +96,8 @@ class _AccountPageState extends State<AccountPage> {
                                 .accounts[widget.currentAccountIndex].name,
                             amount: index * 10000 - 40000,
                             notes: "some notes",
-                            dateTime: DateTime.timestamp()),
+                            dateTime: DateTime.timestamp(),
+                            category: "some category"),
                         widget.accounts,
                         widget.currentAccountIndex)
                     : Container(
