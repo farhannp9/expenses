@@ -28,11 +28,17 @@ class DatabaseService {
     return box.get(accountName);
   }
 
+  Future<void> updateAccount(String accountName, AccountDto dto) async {
+    final box = await Hive.openBox<AccountDto>('accounts');
+    box.put(accountName, dto);
+    debugPrint(dto.color);
+    await Future.delayed(Durations.medium1);
+    _update.sink.add("update");
+  }
+
   Future<void> addAccount(List<AccountDto> accounts) async {
     Map<String, AccountDto> all =
         Map.fromIterable(accounts, key: (e) => e.name);
-    // Map<String, AccountDto> all = Map.fromIterable(
-    //     accounts.map((account) => MapEntry(account.name, account)).toList());
     Hive.openBox<AccountDto>('accounts').then((box) => box.putAll(all));
     _update.sink.add("new");
   }
