@@ -35,7 +35,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    fAccounts = widget.databaseService.getAllAccounts();
+    fAccounts = Future.value(widget.accounts);
     sUpdates = widget.databaseService.stream
       ..listen((data) {
         setState(() {
@@ -57,7 +57,7 @@ class _MyAppState extends State<MyApp> {
         if (!snapshot.hasData) {
           return const LoadingScreen();
         } else {
-          final accounts = (snapshot.data!)
+          final accounts = (snapshot.data!..sort())
               .map((element) => element.toAccount())
               .toList(growable: true);
           final allTransactions = accounts

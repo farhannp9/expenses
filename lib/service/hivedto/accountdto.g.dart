@@ -19,17 +19,20 @@ class AccountDtoAdapter extends TypeAdapter<AccountDto> {
     return AccountDto(
       fields[0] as String,
       fields[2] as String,
+      fields[3] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, AccountDto obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(3)
       ..writeByte(0)
       ..write(obj.name)
       ..writeByte(2)
-      ..write(obj.color);
+      ..write(obj.color)
+      ..writeByte(3)
+      ..write(obj.timestamp);
   }
 
   @override
