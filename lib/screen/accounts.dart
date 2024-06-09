@@ -45,7 +45,7 @@ class _AccountPageState extends State<AccountPage> {
       appBarColor: account.color,
       drawer: NavigationDrawerTemplate(
           widget.accounts, widget.currentAccountIndex, widget.databaseService),
-      appBarTitle: Text(account.name),
+      appBarTitle: account.name,
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),
         onPressed: () => Navigator.of(context).push(MaterialPageRoute(

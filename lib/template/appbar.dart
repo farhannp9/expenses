@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 class AppBarTemplate extends StatelessWidget {
-  final Widget appBarTitle;
+  final String appBarTitle;
   final Widget child;
   final Color? appBarColor;
   final Widget? floatingActionButton;
@@ -18,16 +18,22 @@ class AppBarTemplate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final myColor = appBarColor ?? Theme.of(context).colorScheme.inversePrimary;
+    final textColor =
+        myColor.computeLuminance() > 0.4 ? Colors.black : Colors.white;
     var mainContent = Scaffold(
       appBar: AppBar(
+        iconTheme: IconThemeData(color: textColor),
         // TRY THIS: Try changing the color here to a specific color (to
         // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
         // change color while the other colors stay the same.
-        backgroundColor:
-            appBarColor ?? Theme.of(context).colorScheme.inversePrimary,
+        backgroundColor: myColor,
         // Here we take the value from the MyHomePage object that was created by
         // the App.build method, and use it to set our appbar title.
-        title: appBarTitle,
+        title: Text(
+          appBarTitle,
+          style: TextStyle(color: textColor),
+        ),
       ),
       drawer: drawer == null
           ? null

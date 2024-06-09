@@ -39,8 +39,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
   @override
   Widget build(BuildContext context) {
     return AppBarTemplate(
-      appBarTitle:
-          Text("${widget.toEdit != null ? "Edit" : "Add"} Transaction"),
+      appBarTitle: "${widget.toEdit != null ? "Edit" : "Add"} Transaction",
       floatingActionButton: FloatingActionButton(
         onPressed: _validateForm()
             ? () => _submitForm().then((_) => Navigator.of(context).pop())

@@ -16,30 +16,7 @@ class AccountEditScreen extends StatefulWidget {
 
 class _AccountEditScreenState extends State<AccountEditScreen> {
   final _labelController = TextEditingController();
-  var _color = Colors.red.shade900;
-  static List<Color> setOfColors = [
-    Colors.red.shade900,
-    Colors.pink.shade900,
-    Colors.purple.shade900,
-    Colors.deepPurple.shade900,
-    Colors.indigo.shade900,
-    Colors.blue.shade900,
-    Colors.lightBlue.shade900,
-    Colors.cyan.shade900,
-    Colors.teal.shade900,
-    Colors.green.shade900,
-    Colors.lightGreen.shade900,
-    Colors.lime.shade900,
-    Colors.yellow.shade900,
-    Colors.amber.shade900,
-    Colors.orange.shade900,
-    Colors.deepOrange.shade900,
-    Colors.brown.shade900,
-    Colors.grey.shade900,
-    Colors.blueGrey.shade900,
-    Colors.black,
-  ];
-
+  Color _color = Colors.red;
   @override
   void initState() {
     super.initState();
@@ -52,7 +29,7 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
   @override
   Widget build(BuildContext context) {
     return AppBarTemplate(
-      appBarTitle: Text("${widget.toEdit != null ? "Edit" : "Add"} Account"),
+      appBarTitle: "${widget.toEdit != null ? "Edit" : "Add"} Account",
       floatingActionButton: FloatingActionButton(
         onPressed: _validateForm()
             ? () => _submitForm().then((_) => Navigator.of(context).pop())
@@ -112,12 +89,11 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
           return AlertDialog(
               title: const Text("Pick a color"),
               content: BlockPicker(
-                availableColors: setOfColors,
                 pickerColor: _color, //default color
                 onColorChanged: (Color color) {
                   //on the color picked
                   setState(() {
-                    _color = color.withAlpha(900);
+                    _color = color;
                   });
                   Navigator.of(context).pop();
                 },
