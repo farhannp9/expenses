@@ -19,11 +19,11 @@ class AccountDto implements Comparable<AccountDto> {
 
   static AccountDto fromAccount(Account account) {
     return AccountDto(account.name, account.color.toHexString(),
-        DateTime.now().millisecondsSinceEpoch);
+        account.timestamp ?? DateTime.now().millisecondsSinceEpoch);
   }
 
   Account toAccount() {
-    return Account(name, Color(int.parse(color, radix: 16)), []);
+    return Account(name, Color(int.parse(color, radix: 16)), [], timestamp);
   }
 
   @override

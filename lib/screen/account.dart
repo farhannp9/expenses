@@ -106,6 +106,7 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
       _labelController.text,
       _color,
       widget.toEdit?.transactions ?? [],
+      widget.toEdit?.timestamp,
     );
     if (widget.toEdit == null) {
       widget.databaseService
