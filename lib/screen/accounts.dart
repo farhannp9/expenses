@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:expenses/screen/transaction.dart';
 import 'package:expenses/service/database.dart';
 import 'package:expenses/service/dto/account.dart';
@@ -24,19 +26,27 @@ class AccountPage extends StatefulWidget {
 class _AccountPageState extends State<AccountPage> {
   late Account account;
   late Color color;
+  late StreamSubscription subsc;
 
   @override
   void initState() {
     super.initState();
     account = widget.accounts[widget.currentAccountIndex];
     color = account.color;
-    widget.changedAccountDto.listen((data) {
+    subsc = widget.changedAccountDto.listen(null);
+    subsc.onData((data) {
       if (data.name == account.name) {
         setState(() {
           account = data.toAccount();
         });
       }
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    subsc.cancel();
   }
 
   @override
