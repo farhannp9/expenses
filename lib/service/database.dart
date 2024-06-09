@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class DatabaseService {
-  final StreamController<String> _update = StreamController();
+  final StreamController<AccountDto?> _update = StreamController();
 
   Future<void> registerAdapter() async {
     Hive.registerAdapter(AccountDtoAdapter());
@@ -33,17 +33,19 @@ class DatabaseService {
     box.put(accountName, dto);
     debugPrint(dto.color);
     await Future.delayed(Durations.medium1);
-    _update.sink.add("update");
+    _update.sink.add(dto);
   }
 
   Future<void> addAccount(List<AccountDto> accounts) async {
     Map<String, AccountDto> all =
         Map.fromIterable(accounts, key: (e) => e.name);
     Hive.openBox<AccountDto>('accounts').then((box) => box.putAll(all));
-    _update.sink.add("new");
+    for (var acc in accounts) {
+      _update.sink.add(acc);
+    }
   }
 
-  Stream<String> get stream => _update.stream;
+  Stream<AccountDto?> get stream => _update.stream;
 
   Future<List<AccountDto>> getAllAccounts() async {
     final box = await Hive.openBox<AccountDto>('accounts');
@@ -53,6 +55,6 @@ class DatabaseService {
   Future<void> deleteAccount(String name) async {
     final box = await Hive.openBox<AccountDto>('accounts');
     box.delete(name);
-    _update.sink.add("delete");
+    _update.sink.add(null);
   }
 }

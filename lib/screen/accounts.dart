@@ -2,6 +2,7 @@ import 'package:expenses/screen/transaction.dart';
 import 'package:expenses/service/database.dart';
 import 'package:expenses/service/dto/account.dart';
 import 'package:expenses/service/dto/transaction.dart';
+import 'package:expenses/service/hivedto/accountdto.dart';
 import 'package:expenses/template/appbar.dart';
 import 'package:expenses/template/drawer.dart';
 import 'package:flutter/material.dart';
@@ -11,8 +12,9 @@ class AccountPage extends StatefulWidget {
   final int currentAccountIndex;
   final List<Account> accounts;
   final DatabaseService databaseService;
-  const AccountPage(
-      this.currentAccountIndex, this.accounts, this.databaseService,
+  final Stream<AccountDto> changedAccountDto;
+  const AccountPage(this.currentAccountIndex, this.accounts,
+      this.databaseService, this.changedAccountDto,
       {super.key});
 
   @override
@@ -21,11 +23,20 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage> {
   late Account account;
+  late Color color;
 
   @override
   void initState() {
     super.initState();
     account = widget.accounts[widget.currentAccountIndex];
+    color = account.color;
+    widget.changedAccountDto.listen((data) {
+      if (data.name == account.name) {
+        setState(() {
+          account = data.toAccount();
+        });
+      }
+    });
   }
 
   @override

@@ -76,7 +76,7 @@ class ManageAccountMenu extends StatelessWidget {
             builder: (context) {
               return AccountEditScreen(databaseService, toEdit: currentAccount);
             },
-          )),
+          )).then((_) => Navigator.of(context).pop()),
         ),
         TextButton(
           child: const Row(

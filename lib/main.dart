@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:expenses/screen/accounts.dart';
 import 'package:expenses/service/database.dart';
 import 'package:expenses/service/dto/totalaccount.dart';
@@ -11,12 +13,14 @@ void main() async {
   await Hive.initFlutter();
   var databaseService = DatabaseService();
   await databaseService.registerAdapter();
-  runApp(MyApp(databaseService));
+  final accounts = await databaseService.getAllAccounts();
+  runApp(MyApp(databaseService, accounts));
 }
 
 class MyApp extends StatefulWidget {
   DatabaseService databaseService;
-  MyApp(this.databaseService, {super.key});
+  List<AccountDto> accounts;
+  MyApp(this.databaseService, this.accounts, {super.key});
 
   @override
   State<MyApp> createState() => _MyAppState();
@@ -24,16 +28,21 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   late Future<List<AccountDto>> fAccounts;
-  late Stream<String> sUpdates;
+  late Stream<AccountDto?> sUpdates;
+  StreamController<AccountDto> changeAccountNotification =
+      StreamController.broadcast();
 
   @override
   void initState() {
     super.initState();
     fAccounts = widget.databaseService.getAllAccounts();
     sUpdates = widget.databaseService.stream
-      ..listen((onData) {
+      ..listen((data) {
         setState(() {
           fAccounts = widget.databaseService.getAllAccounts();
+          if (data != null) {
+            changeAccountNotification.sink.add(data);
+          }
         });
       });
   }
@@ -62,8 +71,8 @@ class _MyAppState extends State<MyApp> {
             length: accounts.length,
             child: TabBarView(
               children: accounts.indexed
-                  .map<Widget>((entry) =>
-                      AccountPage(entry.$1, accounts, widget.databaseService))
+                  .map<Widget>((entry) => AccountPage(entry.$1, accounts,
+                      widget.databaseService, changeAccountNotification.stream))
                   .toList(),
             ),
           );
