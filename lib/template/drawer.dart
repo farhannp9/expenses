@@ -1,4 +1,5 @@
 import 'package:expenses/screen/account.dart';
+import 'package:expenses/screen/accounts.dart';
 import 'package:expenses/service/database.dart';
 import 'package:expenses/service/dto/account.dart';
 import 'package:expenses/service/dto/totalaccount.dart';
@@ -122,15 +123,14 @@ class AccountsInTheDrawer extends StatelessWidget {
                   ),
                 ),
                 title: Text(accounts[index].name),
-                subtitle: const Text("IDR102,000.00"),
+                subtitle: Text(formatter.format(accounts[index].getTotal())),
               ),
             ),
             children: {
-              "Open": "IDR0.00",
-              "Income": "IDR1,537,000.00",
-              "Expenses": "-IDR1,435,000.00",
+              "Income": formatter.format(accounts[index].getPositive()),
+              "Expenses": formatter.format(accounts[index].getNegative()),
               "line": "line",
-              "Balance": "IDR102,000",
+              "Balance": formatter.format(accounts[index].getTotal()),
             }.entries.map((MapEntry<String, String> element) {
               if (element.key == 'line') {
                 return SizedBox(

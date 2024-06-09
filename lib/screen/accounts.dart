@@ -10,6 +10,11 @@ import 'package:expenses/template/drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
+NumberFormat formatter = NumberFormat.decimalPatternDigits(
+  locale: 'en_us',
+  decimalDigits: 2,
+);
+
 class AccountPage extends StatefulWidget {
   final int currentAccountIndex;
   final List<Account> accounts;
@@ -76,7 +81,7 @@ class _AccountPageState extends State<AccountPage> {
                   const Center(child: Text("Total")),
                   Center(
                       child: Text(
-                    "00.00",
+                    formatter.format(account.getTotal()),
                     style: TextStyle(
                       color: Colors.blue.shade300,
                       fontWeight: FontWeight.bold,
@@ -88,14 +93,14 @@ class _AccountPageState extends State<AccountPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       Text(
-                        "+1,500,000.00",
+                        formatter.format(account.getPositive()),
                         style: TextStyle(
                           color: Colors.green.shade300,
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      Text("-1,500,000.00",
+                      Text(formatter.format(account.getNegative()),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 15,
@@ -143,11 +148,6 @@ class AccountEntry extends StatelessWidget {
   final int currentAccountIndex;
   const AccountEntry(this.trx, this.accounts, this.currentAccountIndex,
       {super.key});
-
-  static NumberFormat formatter = NumberFormat.decimalPatternDigits(
-    locale: 'en_us',
-    decimalDigits: 2,
-  );
 
   @override
   Widget build(BuildContext context) {
