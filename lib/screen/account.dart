@@ -115,6 +115,5 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
       widget.databaseService.updateAccount(
           toBeSubmitted.name, AccountDto.fromAccount(toBeSubmitted));
     }
-    //  todo implement persistence
   }
 }

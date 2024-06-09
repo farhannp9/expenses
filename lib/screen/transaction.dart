@@ -1,10 +1,16 @@
+import 'package:expenses/service/database.dart';
 import 'package:expenses/service/dto/account.dart';
+import 'package:expenses/service/dto/totalaccount.dart';
 import 'package:expenses/service/dto/transaction.dart';
+import 'package:expenses/service/hivedto/accountdto.dart';
 import 'package:expenses/template/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
 import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
+
+final getIt = GetIt.instance;
 
 class TransactionScreen extends StatefulWidget {
   final List<Account> accounts;
@@ -20,12 +26,14 @@ class TransactionScreen extends StatefulWidget {
 class _TransactionScreenState extends State<TransactionScreen> {
   var _positive = false;
   var _datetime = DateTime.now();
-  late Account _account;
+  late Account? _account;
   final _amountController = TextEditingController();
   final _notesController = TextEditingController();
+  late DatabaseService databaseService;
 
   @override
   void initState() {
+    databaseService = getIt<DatabaseService>();
     super.initState();
     _account = widget.accounts[widget.currentAccountIndex];
     if (widget.toEdit != null) {
@@ -58,12 +66,22 @@ class _TransactionScreenState extends State<TransactionScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   const Text("Account"),
-                  DropdownMenu(
+                  DropdownMenu<int>(
+                      onSelected: (value) {
+                        if (value != null) {
+                          setState(() {
+                            _account = widget.accounts[value];
+                          });
+                        }
+                      },
                       width: 200,
-                      initialSelection: _account.name,
-                      dropdownMenuEntries: widget.accounts
+                      initialSelection: _account is! TotalAccount
+                          ? widget.currentAccountIndex
+                          : null,
+                      dropdownMenuEntries: widget.accounts.indexed
+                          .where((x) => x.$2 is! TotalAccount)
                           .map((acc) => DropdownMenuEntry(
-                              value: acc.name, label: acc.name))
+                              value: acc.$1, label: acc.$2.name))
                           .toList()),
                 ],
               ),
@@ -162,6 +180,9 @@ class _TransactionScreenState extends State<TransactionScreen> {
   }
 
   bool _validateForm() {
+    if (_account is TotalAccount) {
+      return false;
+    }
     return true;
   }
 
@@ -172,13 +193,35 @@ class _TransactionScreenState extends State<TransactionScreen> {
     } else {
       id = const Uuid().v1();
     }
-    Transaction(id,
-        accountId: _account.name,
+    final toBeSubmitted = Transaction(id,
+        accountId: _account!.name,
         amount: double.parse(
                 _amountController.text != "" ? _amountController.text : "0.0") *
             (_positive ? 1 : -1),
         notes: _notesController.text,
         dateTime: _datetime);
     //  todo implement persistence
+
+    if (widget.toEdit == null) {
+      _account!.transactions.add(toBeSubmitted);
+      databaseService.updateAccount(
+          _account!.name, AccountDto.fromAccount(_account!));
+    } else {
+      // TODO implement update
+    }
   }
+
+  //   final toBeSubmitted = Account(
+  //   _labelController.text,
+  //   _color,
+  //   widget.toEdit?.transactions ?? [],
+  //   widget.toEdit?.timestamp,
+  // );
+  // if (widget.toEdit == null) {
+  //   widget.databaseService
+  //       .addAccount([AccountDto.fromAccount(toBeSubmitted)]);
+  // } else {
+  //   widget.databaseService.updateAccount(
+  //       toBeSubmitted.name, AccountDto.fromAccount(toBeSubmitted));
+  // }
 }

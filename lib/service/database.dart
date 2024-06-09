@@ -1,23 +1,40 @@
 import 'dart:async';
 
 import 'package:expenses/service/dto/account.dart';
+import 'package:expenses/service/dto/transaction.dart';
 import 'package:expenses/service/hivedto/accountdto.dart';
+import 'package:expenses/service/hivedto/transactiondto.dart';
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
 class DatabaseService {
   final StreamController<AccountDto?> _update = StreamController();
 
+  List<Transaction> _createSampleTransaction(int times, String accountId) {
+    return List.generate(
+        times,
+        (index) => Transaction.createTransaction(
+            accountId: accountId,
+            amount: (index % 2 == 0 ? 1 : -1) * index * 1000,
+            notes: "some notes",
+            dateTime: DateTime.now()));
+  }
+
   Future<void> registerAdapter() async {
     Hive.registerAdapter(AccountDtoAdapter());
+    Hive.registerAdapter(TransactionDtoAdapter());
 
     final accounts = await getAllAccounts();
     if (accounts.isEmpty) {
       final List<AccountDto> accounts = [
-        (Account("Physical", Colors.red.shade900, [])),
-        Account("Dana Darurat", Colors.blue.shade900, []),
-        Account("Traktir", Colors.green.shade900, []),
-        Account("Id Dima", Colors.yellow.shade900, []),
+        (Account("Physical", Colors.red.shade900,
+            _createSampleTransaction(3, "Physical"))),
+        Account("Dana Darurat", Colors.blue.shade900,
+            _createSampleTransaction(5, "Dana Darurat")),
+        Account("Traktir", Colors.green.shade900,
+            _createSampleTransaction(7, "Traktir")),
+        Account("Belanja", Colors.yellow.shade900,
+            _createSampleTransaction(1, "Belanja")),
       ].map((element) => AccountDto.fromAccount(element)).toList();
       addAccount(accounts);
     }

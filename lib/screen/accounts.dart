@@ -112,28 +112,27 @@ class _AccountPageState extends State<AccountPage> {
             Expanded(
               child: Container(
                   // color: Colors.red,
-                  child: ListView.builder(
-                itemCount: 15 * 2,
-                itemBuilder: (context, index) => index % 2 == 0
-                    ? AccountEntry(
-                        Transaction.createTransaction(
-                            accountId: widget
-                                .accounts[widget.currentAccountIndex].name,
-                            amount: index * 10000 - 40000,
-                            notes: "some notes",
-                            dateTime: DateTime.timestamp(),
-                            category: "some category"),
-                        widget.accounts,
-                        widget.currentAccountIndex)
-                    : Container(
-                        height: 1,
-                        color: Colors.white,
-                      ),
-              )),
+                  child: _listOfTransactions()),
             )
           ],
         ),
       ),
+    );
+  }
+
+  Widget _listOfTransactions() {
+    return ListView.builder(
+      itemCount: (account.transactions.length) * 2,
+      itemBuilder: (context, index) {
+        if (index % 2 != 0) {
+          return Container(
+            height: 1,
+            color: Colors.white,
+          );
+        }
+        return AccountEntry(account.transactions[index ~/ 2], widget.accounts,
+            widget.currentAccountIndex);
+      },
     );
   }
 }
@@ -172,16 +171,20 @@ class AccountEntry extends StatelessWidget {
                 ? const Icon(Icons.add)
                 : const Icon(Icons.remove),
           ),
-          // const Icon(Icons.remove),
-          // const Text("es bubur sumsum"),
-          Container(
-            // color: Colors.yellow.shade900,
-            child: Text(trx.notes),
-          ),
           Expanded(
-              child: Container(
-                  // color: Colors.green,
-                  )),
+            // color: Colors.yellow.shade900,
+            child: Text(
+              trx.notes,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(
+            width: 30,
+          ),
+          // Expanded(
+          //     child: Container(
+          //         // color: Colors.green,
+          //         )),
           Container(
             // color: Colors.blue.shade900,
             child: Column(

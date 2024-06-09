@@ -31,8 +31,11 @@ class AccountDto implements Comparable<AccountDto> {
   }
 
   Account toAccount() {
-    return Account(name, Color(int.parse(color, radix: 16)),
-        transactions?.map((x) => x.toTransaction()).toList() ?? [], timestamp);
+    return Account(
+        name,
+        Color(int.parse(color, radix: 16)),
+        (transactions?..sort())?.map((x) => x.toTransaction()).toList() ?? [],
+        timestamp);
   }
 
   @override

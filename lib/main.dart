@@ -7,11 +7,15 @@ import 'package:expenses/service/dto/transaction.dart';
 import 'package:expenses/service/hivedto/accountdto.dart';
 import 'package:expenses/template/loading.dart';
 import 'package:flutter/material.dart';
+import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+
+final getIt = GetIt.instance;
 
 void main() async {
   await Hive.initFlutter();
-  var databaseService = DatabaseService();
+  getIt.registerSingleton<DatabaseService>(DatabaseService());
+  var databaseService = getIt<DatabaseService>();
   await databaseService.registerAdapter();
   final accounts = await databaseService.getAllAccounts();
   runApp(MyApp(databaseService, accounts));
