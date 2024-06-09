@@ -1,41 +1,44 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'accountdto.dart';
+part of 'transactiondto.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class AccountDtoAdapter extends TypeAdapter<AccountDto> {
+class TransactionDtoAdapter extends TypeAdapter<TransactionDto> {
   @override
-  final int typeId = 1;
+  final int typeId = 2;
 
   @override
-  AccountDto read(BinaryReader reader) {
+  TransactionDto read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return AccountDto(
-      fields[0] as String,
+    return TransactionDto(
+      fields[1] as String,
       fields[2] as String,
-      fields[3] as int,
-      (fields[4] as List?)?.cast<TransactionDto>(),
+      fields[3] as double,
+      fields[4] as String,
+      fields[5] as int,
     );
   }
 
   @override
-  void write(BinaryWriter writer, AccountDto obj) {
+  void write(BinaryWriter writer, TransactionDto obj) {
     writer
-      ..writeByte(4)
-      ..writeByte(0)
-      ..write(obj.name)
+      ..writeByte(5)
+      ..writeByte(1)
+      ..write(obj.id)
       ..writeByte(2)
-      ..write(obj.color)
+      ..write(obj.accountId)
       ..writeByte(3)
-      ..write(obj.timestamp)
+      ..write(obj.amount)
       ..writeByte(4)
-      ..write(obj.transactions);
+      ..write(obj.notes)
+      ..writeByte(5)
+      ..write(obj.timestamp);
   }
 
   @override
@@ -44,7 +47,7 @@ class AccountDtoAdapter extends TypeAdapter<AccountDto> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is AccountDtoAdapter &&
+      other is TransactionDtoAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

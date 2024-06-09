@@ -179,7 +179,6 @@ class _TransactionScreenState extends State<TransactionScreen> {
             (_positive ? 1 : -1),
         notes: _notesController.text,
         dateTime: _datetime);
-    debugPrint('submit');
     //  todo implement persistence
   }
 }
