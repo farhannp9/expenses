@@ -33,7 +33,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   late Future<List<AccountDto>> fAccounts;
   late Stream<AccountDto?> sUpdates;
-  StreamController<AccountDto> changeAccountNotification =
+  StreamController<AccountDto?> changeAccountNotification =
       StreamController.broadcast();
 
   @override
@@ -44,9 +44,7 @@ class _MyAppState extends State<MyApp> {
       ..listen((data) {
         setState(() {
           fAccounts = widget.databaseService.getAllAccounts();
-          if (data != null) {
-            changeAccountNotification.sink.add(data);
-          }
+          changeAccountNotification.sink.add(data);
         });
       });
   }

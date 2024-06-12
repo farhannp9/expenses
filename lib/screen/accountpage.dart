@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:expenses/screen/transaction.dart';
 import 'package:expenses/service/database.dart';
 import 'package:expenses/service/dto/account.dart';
+import 'package:expenses/service/dto/totalaccount.dart';
 import 'package:expenses/service/dto/transaction.dart';
 import 'package:expenses/service/hivedto/accountdto.dart';
 import 'package:expenses/template/appbar.dart';
@@ -19,7 +20,7 @@ class AccountPage extends StatefulWidget {
   final int currentAccountIndex;
   final List<Account> accounts;
   final DatabaseService databaseService;
-  final Stream<AccountDto> changedAccountDto;
+  final Stream<AccountDto?> changedAccountDto;
   const AccountPage(this.currentAccountIndex, this.accounts,
       this.databaseService, this.changedAccountDto,
       {super.key});
@@ -39,8 +40,13 @@ class _AccountPageState extends State<AccountPage> {
     account = widget.accounts[widget.currentAccountIndex];
     color = account.color;
     subsc = widget.changedAccountDto.listen(null);
-    subsc.onData((data) {
-      if (data.name == account.name) {
+    subsc.onData((data) async {
+      if (account is TotalAccount || data == null) {
+        final totalAccount = await _getAll();
+        setState(() {
+          account = totalAccount;
+        });
+      } else if (data.name == account.name) {
         setState(() {
           account = data.toAccount();
         });
@@ -52,6 +58,11 @@ class _AccountPageState extends State<AccountPage> {
   void dispose() {
     super.dispose();
     subsc.cancel();
+  }
+
+  Future<TotalAccount> _getAll() async {
+    final accounts = await widget.databaseService.getAllAccounts();
+    return TotalAccount.create(accounts);
   }
 
   @override
