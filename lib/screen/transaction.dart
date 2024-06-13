@@ -202,13 +202,13 @@ class _TransactionScreenState extends State<TransactionScreen> {
         dateTime: _datetime);
     //  todo implement persistence
 
-    if (widget.toEdit == null) {
-      _account!.transactions.add(toBeSubmitted);
-      databaseService.updateAccount(
-          _account!.name, AccountDto.fromAccount(_account!));
-    } else {
-      // TODO implement update
+    if (widget.toEdit != null) {
+      _account!.transactions.removeWhere((x) => widget.toEdit!.id == x.id);
     }
+
+    _account!.transactions.add(toBeSubmitted);
+    databaseService.updateAccount(
+        _account!.name, AccountDto.fromAccount(_account!));
   }
 
   //   final toBeSubmitted = Account(
