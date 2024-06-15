@@ -6,6 +6,7 @@ import 'package:expenses/service/dto/account.dart';
 import 'package:expenses/service/dto/totalaccount.dart';
 import 'package:expenses/service/dto/transaction.dart';
 import 'package:expenses/service/hivedto/accountdto.dart';
+import 'package:expenses/service/hivedto/transactiondto.dart';
 import 'package:expenses/template/appbar.dart';
 import 'package:expenses/template/drawer.dart';
 import 'package:flutter/material.dart';
@@ -152,8 +153,14 @@ class _AccountPageState extends State<AccountPage> {
           onDismissed: (direction) =>
               _deleteTransaction(transaction.accountId, transaction.id)
                   .then((_) {
-            ScaffoldMessenger.of(context)
-                .showSnackBar(const SnackBar(content: Text("deleted!")));
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                action: SnackBarAction(
+                    label: "Undo",
+                    onPressed: () async {
+                      await widget.databaseService.addTransaction(
+                          TransactionDto.fromTransaction(transaction));
+                    }),
+                content: const Text("deleted!")));
           }),
           background: Container(
             color: Colors.red.shade500,

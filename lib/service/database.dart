@@ -74,4 +74,10 @@ class DatabaseService {
     box.delete(name);
     _update.sink.add(null);
   }
+
+  Future<void> addTransaction(TransactionDto dto) async {
+    AccountDto account = (await getAccount(dto.accountId))!;
+    account.transactions?.add(dto);
+    updateAccount(account.name, account);
+  }
 }
