@@ -22,7 +22,7 @@ class NavigationDrawerTemplate extends StatelessWidget {
         // color: Colors.red.shade700,
         child: Column(children: [
           ManageAccountMenu(accounts[DefaultTabController.of(context).index],
-              databaseService),
+              databaseService, accounts.map((x) => x.name).toSet()),
           SizedBox(
             height: 2,
             child: Container(
@@ -41,7 +41,9 @@ class NavigationDrawerTemplate extends StatelessWidget {
 class ManageAccountMenu extends StatelessWidget {
   final Account currentAccount;
   final DatabaseService databaseService;
-  const ManageAccountMenu(this.currentAccount, this.databaseService,
+  final Set<String> accountsName;
+  const ManageAccountMenu(
+      this.currentAccount, this.databaseService, this.accountsName,
       {super.key});
 
   @override
@@ -52,12 +54,12 @@ class ManageAccountMenu extends StatelessWidget {
           children: [
             Icon(Icons.add),
             SizedBox(width: 10),
-            Text("Add Account"),
+            Text("Add Account", style: TextStyle(fontSize: 20)),
           ],
         ),
         onPressed: () => Navigator.of(context).push(MaterialPageRoute(
           builder: (context) {
-            return AccountEditScreen(databaseService);
+            return AccountEditScreen(databaseService, accountsName);
           },
         )),
       ),
@@ -70,12 +72,13 @@ class ManageAccountMenu extends StatelessWidget {
             children: [
               Icon(Icons.edit),
               SizedBox(width: 10),
-              Text("Edit Account"),
+              Text("Edit Account", style: TextStyle(fontSize: 20)),
             ],
           ),
           onPressed: () => Navigator.of(context).push(MaterialPageRoute(
             builder: (context) {
-              return AccountEditScreen(databaseService, toEdit: currentAccount);
+              return AccountEditScreen(databaseService, accountsName,
+                  toEdit: currentAccount);
             },
           )).then((_) => Navigator.of(context).pop()),
         ),
@@ -84,7 +87,7 @@ class ManageAccountMenu extends StatelessWidget {
             children: [
               Icon(Icons.delete),
               SizedBox(width: 10),
-              Text("Delete Account"),
+              Text("Delete Account", style: TextStyle(fontSize: 20)),
             ],
           ),
           onPressed: () => databaseService
@@ -94,7 +97,7 @@ class ManageAccountMenu extends StatelessWidget {
       ]);
     }
     return ExpansionTile(
-      title: const Text("Manage account"),
+      title: const Text("Manage account", style: TextStyle(fontSize: 20)),
       children: children,
     );
   }
@@ -122,8 +125,10 @@ class AccountsInTheDrawer extends StatelessWidget {
                     shape: BoxShape.circle,
                   ),
                 ),
-                title: Text(accounts[index].name),
-                subtitle: Text(formatter.format(accounts[index].getTotal())),
+                title: Text(accounts[index].name,
+                    style: const TextStyle(fontSize: 23)),
+                subtitle: Text(formatter.format(accounts[index].getTotal()),
+                    style: const TextStyle(fontSize: 16)),
               ),
             ),
             children: {
@@ -142,8 +147,8 @@ class AccountsInTheDrawer extends StatelessWidget {
               return Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(element.key),
-                  Text(element.value),
+                  Text(element.key, style: const TextStyle(fontSize: 20)),
+                  Text(element.value, style: const TextStyle(fontSize: 20)),
                 ],
               );
             }).toList(),

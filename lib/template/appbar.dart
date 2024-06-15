@@ -32,7 +32,7 @@ class AppBarTemplate extends StatelessWidget {
         // the App.build method, and use it to set our appbar title.
         title: Text(
           appBarTitle,
-          style: TextStyle(color: textColor),
+          style: TextStyle(color: textColor, fontSize: 27),
         ),
       ),
       drawer: drawer == null
@@ -46,7 +46,7 @@ class AppBarTemplate extends StatelessWidget {
     if (Platform.isWindows) {
       return Center(
         child: AspectRatio(
-          aspectRatio: 9 / 16,
+          aspectRatio: 10 / 16,
           child: mainContent,
         ),
       );

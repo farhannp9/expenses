@@ -83,21 +83,22 @@ class _AccountPageState extends State<AccountPage> {
         )),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
         child: Column(
           children: [
             Container(
               // color: Colors.blue,
               child: Column(
                 children: [
-                  const Center(child: Text("Total")),
+                  const Center(
+                      child: Text("Total", style: TextStyle(fontSize: 25))),
                   Center(
                       child: Text(
                     formatter.format(account.getTotal()),
                     style: TextStyle(
                       color: Colors.blue.shade300,
                       fontWeight: FontWeight.bold,
-                      fontSize: 20,
+                      fontSize: 23,
                     ),
                   )),
                   Center(
@@ -108,14 +109,14 @@ class _AccountPageState extends State<AccountPage> {
                         formatter.format(account.getPositive()),
                         style: TextStyle(
                           color: Colors.green.shade300,
-                          fontSize: 15,
+                          fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       Text(formatter.format(account.getNegative()),
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 15,
+                            fontSize: 20,
                             color: Colors.red.shade300,
                           )),
                     ],
@@ -220,6 +221,9 @@ class AccountEntry extends StatelessWidget {
           Expanded(
             // color: Colors.yellow.shade900,
             child: Text(
+              style: const TextStyle(
+                fontSize: 22,
+              ),
               trx.notes,
               overflow: TextOverflow.ellipsis,
             ),
@@ -240,7 +244,7 @@ class AccountEntry extends StatelessWidget {
                   formatter.format(trx.amount),
                   style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 17.0,
+                      fontSize: 22,
                       color: trx.amount >= 0
                           ? Colors.green.shade300
                           : Colors.red.shade300),

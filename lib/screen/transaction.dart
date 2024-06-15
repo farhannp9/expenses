@@ -37,6 +37,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
     databaseService = getIt<DatabaseService>();
     super.initState();
     _account = widget.accounts[widget.currentAccountIndex];
+    _currentAccountIndex = widget.currentAccountIndex;
     if (widget.toEdit != null) {
       final acct = widget.accounts.indexed
           .firstWhere((entry) => entry.$2.name == widget.toEdit!.accountId);
@@ -70,8 +71,9 @@ class _TransactionScreenState extends State<TransactionScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text("Account"),
+                  const Text("Account", style: TextStyle(fontSize: 20)),
                   DropdownMenu<int>(
+                      textStyle: const TextStyle(fontSize: 20),
                       onSelected: (value) {
                         if (value != null) {
                           setState(() {
@@ -91,7 +93,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                 ],
               ),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                const Text("Amount"),
+                const Text("Amount", style: TextStyle(fontSize: 20)),
                 Switch(
                   value: _positive,
                   onChanged: (val) => setState(() {
@@ -102,6 +104,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                 SizedBox(
                   width: 200,
                   child: TextFormField(
+                    style: const TextStyle(fontSize: 20),
                     controller: _amountController,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
@@ -118,7 +121,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const Text("Date and Time"),
+                  const Text("Date and Time", style: TextStyle(fontSize: 20)),
                   ElevatedButton(
                       onPressed: () async {
                         DateTime? value = await showDatePicker(
@@ -140,7 +143,8 @@ class _TransactionScreenState extends State<TransactionScreen> {
                           });
                         }
                       },
-                      child: Text(DateFormat.yMMMd().format(_datetime))),
+                      child: Text(DateFormat.yMMMd().format(_datetime),
+                          style: const TextStyle(fontSize: 15))),
                   ElevatedButton(
                       onPressed: () async {
                         TimeOfDay? val = await showTimePicker(
@@ -163,12 +167,13 @@ class _TransactionScreenState extends State<TransactionScreen> {
                 ],
               ),
               Row(children: [
-                const Text("Notes"),
+                const Text("Notes", style: TextStyle(fontSize: 20)),
                 const SizedBox(
                   width: 30,
                 ),
                 Expanded(
                   child: TextFormField(
+                    style: const TextStyle(fontSize: 20),
                     controller: _notesController,
                     decoration: const InputDecoration(
                       border: UnderlineInputBorder(),

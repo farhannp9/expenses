@@ -8,7 +8,9 @@ import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 class AccountEditScreen extends StatefulWidget {
   final Account? toEdit;
   final DatabaseService databaseService;
-  const AccountEditScreen(this.databaseService, {this.toEdit, super.key});
+  final Set<String> currentAccountsName;
+  const AccountEditScreen(this.databaseService, this.currentAccountsName,
+      {this.toEdit, super.key});
 
   @override
   State<AccountEditScreen> createState() => _AccountEditScreenState();
@@ -16,6 +18,7 @@ class AccountEditScreen extends StatefulWidget {
 
 class _AccountEditScreenState extends State<AccountEditScreen> {
   final _labelController = TextEditingController();
+  late Future<Set<String>> fCurrentAccounts;
   Color _color = Colors.red;
   @override
   void initState() {
@@ -31,9 +34,7 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
     return AppBarTemplate(
       appBarTitle: "${widget.toEdit != null ? "Edit" : "Add"} Account",
       floatingActionButton: FloatingActionButton(
-        onPressed: _validateForm()
-            ? () => _submitForm().then((_) => Navigator.of(context).pop())
-            : null,
+        onPressed: () => _clickSubmit()(context),
         child: const Icon(Icons.check),
       ),
       child: Padding(
@@ -45,10 +46,11 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                const Text("Name"),
+                const Text("Name", style: TextStyle(fontSize: 20)),
                 SizedBox(
                   width: 200,
                   child: TextFormField(
+                    style: const TextStyle(fontSize: 20),
                     enabled: widget.toEdit == null ? true : false,
                     controller: _labelController,
                     keyboardType: TextInputType.name,
@@ -60,7 +62,7 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
                 )
               ]),
               Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                const Text("Color"),
+                const Text("Color", style: TextStyle(fontSize: 20)),
                 ElevatedButton(
                   style: ButtonStyle(
                     fixedSize:
@@ -78,8 +80,14 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
     );
   }
 
-  bool _validateForm() {
-    return true;
+  List<String> _validateForm() {
+    var ret = <String>[];
+    if (widget.toEdit == null) {
+      if (widget.currentAccountsName.contains(_labelController.text)) {
+        ret.add("name of the account already existed");
+      }
+    }
+    return ret;
   }
 
   _showColorPicker() {
@@ -99,6 +107,20 @@ class _AccountEditScreenState extends State<AccountEditScreen> {
                 },
               ));
         });
+  }
+
+  Future<void> Function(BuildContext ctx) _clickSubmit() {
+    return (ctx) async {
+      final msgs = _validateForm();
+      if (msgs.isNotEmpty) {
+        ScaffoldMessenger.of(ctx).showSnackBar(SnackBar(
+            content: Column(
+          children: msgs.map((x) => Text(x)).toList(),
+        )));
+        return;
+      }
+      return _submitForm().then((_) => Navigator.of(context).pop());
+    };
   }
 
   Future<void> _submitForm() async {
