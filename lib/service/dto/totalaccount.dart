@@ -9,7 +9,8 @@ class TotalAccount extends Account {
     List<Transaction> transactions = account
         .expand<TransactionDto>((x) => x.transactions ?? [])
         .map((x) => x.toTransaction())
-        .toList();
+        .toList()
+      ..sort();
     return TotalAccount("Total", Colors.grey.shade700, transactions);
   }
 

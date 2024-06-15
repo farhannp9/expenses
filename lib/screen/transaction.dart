@@ -27,6 +27,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
   var _positive = false;
   var _datetime = DateTime.now();
   late Account? _account;
+  late int? _currentAccountIndex;
   final _amountController = TextEditingController();
   final _notesController = TextEditingController();
   late DatabaseService databaseService;
@@ -37,6 +38,10 @@ class _TransactionScreenState extends State<TransactionScreen> {
     super.initState();
     _account = widget.accounts[widget.currentAccountIndex];
     if (widget.toEdit != null) {
+      final acct = widget.accounts.indexed
+          .firstWhere((entry) => entry.$2.name == widget.toEdit!.accountId);
+      _account = acct.$2;
+      _currentAccountIndex = acct.$1;
       _datetime = widget.toEdit!.dateTime;
       _amountController.text = "${widget.toEdit!.amount.abs()}";
       _notesController.text = widget.toEdit!.notes;
@@ -76,7 +81,7 @@ class _TransactionScreenState extends State<TransactionScreen> {
                       },
                       width: 200,
                       initialSelection: _account is! TotalAccount
-                          ? widget.currentAccountIndex
+                          ? _currentAccountIndex
                           : null,
                       dropdownMenuEntries: widget.accounts.indexed
                           .where((x) => x.$2 is! TotalAccount)

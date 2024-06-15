@@ -1,6 +1,6 @@
 import 'package:uuid/uuid.dart';
 
-class Transaction {
+class Transaction implements Comparable<Transaction> {
   final String id;
   final String accountId;
   final double amount;
@@ -39,5 +39,10 @@ class Transaction {
         notes: trx.notes,
         dateTime: trx.dateTime,
         category: category);
+  }
+
+  @override
+  int compareTo(Transaction other) {
+    return dateTime.compareTo(other.dateTime);
   }
 }
