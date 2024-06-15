@@ -146,10 +146,38 @@ class _AccountPageState extends State<AccountPage> {
             color: Colors.white,
           );
         }
-        return AccountEntry(account.transactions[index ~/ 2], widget.accounts,
-            widget.currentAccountIndex);
+        var transaction = account.transactions[index ~/ 2];
+        return Dismissible(
+          key: Key(transaction.id),
+          onDismissed: (direction) =>
+              _deleteTransaction(transaction.accountId, transaction.id)
+                  .then((_) {
+            ScaffoldMessenger.of(context)
+                .showSnackBar(const SnackBar(content: Text("deleted!")));
+          }),
+          background: Container(
+            color: Colors.red.shade500,
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Icon(Icons.delete),
+                Icon(Icons.delete),
+              ],
+            ),
+          ),
+          child: AccountEntry(
+              transaction, widget.accounts, widget.currentAccountIndex),
+        );
       },
     );
+  }
+
+  Future<void> _deleteTransaction(String accountId, String id) async {
+    AccountDto acct = (await widget.databaseService.getAccount(accountId))!;
+    acct.transactions?.removeWhere((trx) => trx.id == id);
+
+    await widget.databaseService.updateAccount(acct.name, acct);
   }
 }
 
